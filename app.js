@@ -1,29 +1,26 @@
-var Twitter        = require('twitter');
-var fs             = require('fs');
+var Twitter          = require('twitter');
+var fs               = require('fs');
+const express        = require('express');
+const favicon        = require('serve-favicon');
+const load           = require('express-load');
+const logger         = require('morgan');
+const cookieParser   = require('cookie-parser');
+const bodyParser     = require('body-parser');
 
-var client = new Twitter({
-    consumer_key: 'wVXBp1HYvkU05jagB85cQLR4b',
-    consumer_secret: 'eZSSU0HWzqIZNNHIAQuFB12AsKbwvfAPhqAIjq49tTEehYaF9R',
-    access_token_key: '899794247376924673-Ri66hmIk42Ou5ilYpXpKj60lGLXN1eq',
-    access_token_secret: 'Ks3NuF41VSTQbVanrX3kFZdGbhygYMdwNaZzKZ5Dtk6WH'
-});
-   
-var params = {
-    q: '#AecioNeves'
-}
+var app = express();
 
-client.get('search/tweets', params, (error, tweet, response) =>  {
-    if (!error) { console.log(tweet.statuses[0].text);  }
-});
+load('models').then('middleware').then("service").into(app);
 
-var text = fs.readFileSync("congressistas.txt").toString("utf-8");
-var textLine = text.split(";");
-console.log(textLine[0]);
+var mongodb = app.middleware.mongodb;
+var service = app.middleware.service;
 
-// fs.readFile('congressistas.txt', function(text) {
-//     // return err ? console.error("Could not open file: %s", err) : console.log(data.toString('utf8'));
-//     var textLine = text.split(';');
-//     console.info(textLine);
+// view engine setup
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(__dirname + '/public'));
 
-    
-// });
+mongodb.connect();
