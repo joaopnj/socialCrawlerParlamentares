@@ -1,5 +1,6 @@
-var Twitter = require('twitter');
+var Twitter        = require('twitter');
 var TwitterCrawler = require('twitter-crawler');
+var fs             = require('fs');
 
 var client = new Twitter({
     consumer_key: 'wVXBp1HYvkU05jagB85cQLR4b',
@@ -13,7 +14,9 @@ var params = {
 }
 
 client.get('search/tweets', params, function(error, tweet, response) {
-    if (!error) {
-      console.log(tweet.statuses[1].text);
-    }
+    if (!error) { console.log(tweet.statuses[1].text);  }
+});
+
+fs.readFile('congressistas.txt', function(err,data){
+    return err ? console.error("Could not open file: %s", err) : console.log(data.toString('utf8'));
 });
