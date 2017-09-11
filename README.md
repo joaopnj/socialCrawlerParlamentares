@@ -1,4 +1,4 @@
-# socialCrawlerParlamentares
+# Social Crawler Parlamentares
 Crawler que levanta informações sobre parlamentares, e identifica quais delas são negativas ou positivas.
 
 # O que você precisa para funcionar
