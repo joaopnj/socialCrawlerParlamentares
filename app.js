@@ -12,7 +12,7 @@ var app = express();
 load('models').then('middleware').then("service").into(app);
 
 var mongodb = app.middleware.mongodb;
-var service = app.middleware.service;
+var service = app.service.service;
 
 // view engine setup
 app.set('views', __dirname + '/views');
@@ -24,3 +24,5 @@ app.use(cookieParser());
 app.use(express.static(__dirname + '/public'));
 
 mongodb.connect();
+service.saveParlamentar();
+service.getParlamentar();

@@ -1,4 +1,4 @@
-Abel Mesquita Jr;
+Abel Mesquita;
 Acir Gurgacz;
 Adail Carneiro;
 Adalberto Cavalcanti;
@@ -343,7 +343,7 @@ Luiz Carlos Ramos;
 Luiz Cláúdio;
 Luiz Couto;
 Luiz Fernando Fária;
-Luiz Lauro Filho;;
+Luiz Lauro Filho;
 Luiz Nishimori;
 Luiz Sérgio;
 Luiza Erundina;
@@ -590,4 +590,4 @@ Zeze Perrella;
 Zé Augusto Nalin;
 Zé Carlos;
 Zé Geraldo;
-Zé Silva;
+Zé Silva

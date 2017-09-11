@@ -4,7 +4,7 @@ module.exports = (app) => {
     
     var MongoDbMiddleware = {
         connect : () => {
-            mongoose.connect('mongodb://localhost/waibtec', (err) => {
+            mongoose.connect('mongodb://localhost/trabalhoBD', (err) => {
                 if(err){ console.log('Erro ao conectar no mongodb '+err); }
             });
         }
