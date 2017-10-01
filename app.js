@@ -26,9 +26,11 @@ app.use(express.static(__dirname + '/public'));
 mongodb.connect();
 service.saveParlamentar();
 
-setInterval( () => { 
-    service.getParlamentar(posicao++);
-    }, 5000);
+if(posicao <= 593){
+    setInterval( () => { 
+        service.getParlamentar(posicao++);
+    },5000);
+}
 
 app.listen(port, () => {
     console.log("Servidor rodando na porta "+port);

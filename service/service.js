@@ -41,28 +41,28 @@ module.exports = (app) => {
                 console.log("HashTag: "+hashTag);
 
                 client.get('search/tweets', {"q" : hashTag }, (error, tweet, response) => {
+                    if(tweet.statuses != null || tweet.statuses != undefined){
+                        console.log("Texto do tweet: " +tweet.statuses[0]);
+                        console.log("Número de tweets: "+ tweet.statuses.length);
 
-                    console.log("Texto do tweet: " +tweet.statuses[0]);
-                    console.log("Número de tweets: "+ tweet.statuses.length);
+                        if(tweet.statuses.length !== 0) {
 
-                    if(tweet.statuses.length !== 0) {
+                            for (var i = 0; i < tweet.statuses.length; i++) {
 
-                        for (var i = 0; i < tweet.statuses.length; i++) {
+                                if(error){ console.log(error); }
 
-                            if(error){ console.log(error); }
+                                console.log("Texto do tweet: "  + tweet.statuses[i].text);
+                                console.log("Usuário do tweet " + tweet.statuses[i].user.name);
+                                console.log("Dados do usuário " + tweet.statuses[i].user);
 
-                            console.log("Texto do tweet: "  + tweet.statuses[i].text);
-                            console.log("Usuário do tweet " + tweet.statuses[i].user.name);
-                            console.log("Dados do usuário " + tweet.statuses[i].user);
-
-                            var tweetObj        = new Tweet();
-                            tweetObj.texto      = tweet.statuses[i].text;
-                            tweetObj.internauta = tweet.statuses[i].user.name;
-                            tweetObj.hashTag    = hashTag;
-                                                    
-                            Dao.saveTweets(tweetObj);
+                                var tweetObj        = new Tweet();
+                                tweetObj.texto      = tweet.statuses[i].text;
+                                tweetObj.internauta = tweet.statuses[i].user.name;
+                                tweetObj.hashTag    = hashTag;
+                                                        
+                                Dao.saveTweets(tweetObj);
+                            }
                         }
-
                     }
                 });
             });
