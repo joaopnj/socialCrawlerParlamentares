@@ -9,7 +9,7 @@ var   posicao        = 0;
 
 var app = express();
 
-load('models').then('middleware').then("service").into(app);
+load('models').then("dao").then('middleware').then("service").into(app);
 
 var mongodb = app.middleware.mongodb;
 var service = app.service.service;
@@ -26,8 +26,9 @@ app.use(express.static(__dirname + '/public'));
 mongodb.connect();
 service.saveParlamentar();
 
-// setInterval( () => { service.getParlamentar(posicao++); }, 5000);
-service.getParlamentar(posicao);
+setInterval( () => { 
+    service.getParlamentar(posicao++);
+    }, 5000);
 
 app.listen(port, () => {
     console.log("Servidor rodando na porta "+port);
