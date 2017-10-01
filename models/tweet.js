@@ -4,7 +4,7 @@ module.exports = () => {
 
 	var tweet  = new Schema({
         texto	   : String,
-        hashTag   : String,
+        hashTag    : String,
         internauta : String,
 		cadastro: {type: Date, default: Date.now}
 	});

@@ -1,11 +1,11 @@
-var Twitter          = require('twitter');
-var fs               = require('fs');
 const express        = require('express');
 const favicon        = require('serve-favicon');
 const load           = require('express-load');
 const logger         = require('morgan');
 const cookieParser   = require('cookie-parser');
 const bodyParser     = require('body-parser');
+const port           = 3000;
+var   posicao        = 0;
 
 var app = express();
 
@@ -25,4 +25,10 @@ app.use(express.static(__dirname + '/public'));
 
 mongodb.connect();
 service.saveParlamentar();
-service.getParlamentar();
+
+// setInterval( () => { service.getParlamentar(posicao++); }, 5000);
+service.getParlamentar(posicao);
+
+app.listen(port, () => {
+    console.log("Servidor rodando na porta "+port);
+});

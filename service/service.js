@@ -1,30 +1,16 @@
 module.exports = (app) => { 
     var TwitterAPI        = require('twitter');
-    // var twitterAPI     = require('node-twitter-api');
-    var Twitter     = require('node-twitter');
-    var fs             = require('fs');
-    var Congressista  = app.models.congressistas;
-    var Tweet = app.models.tweet;
-    // var dao            = app.dao.dao;
+    var fs                = require('fs');
+    var Congressista      = app.models.congressistas;
+    var Tweet             = app.models.tweet;
+    
     var client = new TwitterAPI({
-        consumer_key: 'YVGr7mZLDddzyPPW0PMz6lyB7',
-        consumer_secret: 'iDb2uBJ5YezbdY3zqAc01LLPsGUbPGDVoSqbUjKeIX0s2neCCx',
-        access_token_key: '755796020592869376-lka1GoJfBqSq1ee5uHA0xHBcJYqQDju',
-        access_token_secret: 'tiK6QX6VPNioPmO8hVplkngqVYisJrDYtgws89JpNJGHk'
+        consumer_key: 'knMiCR839pbl3VywuqLSIXMyg',
+        consumer_secret: 'NQaU4O0ombTiQ3G51aoYlXMfj00z9XFc7ep699LQFmufXNdxks',
+        access_token_key: '71316971-itKpPRRjArC7WTUkWqWL17f7elPVCv3A52ZkaVwf9',
+        access_token_secret: 'AGj7sexsGinTyKDdFOR3FemfQbVKV0Zh5GO0mIgaBc9K6'
     });
 
-    var twitterSearchClient = new Twitter.SearchClient(
-        'wVXBp1HYvkU05jagB85cQLR4b',
-        'eZSSU0HWzqIZNNHIAQuFB12AsKbwvfAPhqAIjq49tTEehYaF9R',
-        '899794247376924673-Ri66hmIk42Ou5ilYpXpKj60lGLXN1eq',
-        'Ks3NuF41VSTQbVanrX3kFZdGbhygYMdwNaZzKZ5Dtk6WH'
-    );
-
-    // var twitter = new twitterAPI({
-    //     consumerKey: 'wVXBp1HYvkU05jagB85cQLR4b',
-    //     consumerSecret: 'eZSSU0HWzqIZNNHIAQuFB12AsKbwvfAPhqAIjq49tTEehYaF9R'
-    // });
-    
     const mongoose = require('mongoose');
     
     var TwitterService = {
@@ -44,27 +30,42 @@ module.exports = (app) => {
             }
         },
 
-        getParlamentar : () => {
+        getParlamentar : (posicao) => {
             
             Congressista.find( (err, data) => {
-                for (var i = 0; i < data.length; i++) {
-                    client.get('search/tweets', {"q" : "#"+data[i].name }, function(error, tweet, response){
-                        if(error){
-                            console.log(error);
-                        }
-                        if(tweet.statuses != undefined) {
-                            var tweetObj = new Tweet();
-                            tweetObj.texto = result.statuses.text;
-                            tweetObj.internauta = result.statuses.user;
-                            tweetObj.hashTag = "#"+data[i].nome;
-                                        
-                            tweet.save((err) => {
-                                if (err) console.log(err);
-                            });
-                        }
-                    });
-                }
+
+                console.log("Posição: "+posicao);
+                console.log("Congressista "+posicao+ " : "+data[posicao]);
+
+                var hashTag = "#"+data[posicao].nome;
+
+                console.log("HashTag: "+hashTag);
+
+                // client.get('search/tweets', {"q" : hashTag }, (error, tweet, response) => {
+
+                //     for (var i = 0; i < tweet.length; i++) {
+
+                //         if(error){ console.log(error); }
+                        
+                //         if(tweet.statuses != undefined) {
+
+                //             console.log(tweet.statuses[i].text);
+                //             console.log(tweet.statuses[i].user);
+
+                //             var tweetObj        = new Tweet();
+                //             tweetObj.texto      = tweet[i].statuses.text;
+                //             tweetObj.internauta = tweet[i].statuses.user;
+                //             tweetObj.hashTag    = hashTag;
+                                                
+                //             tweetObj.save((err) => {
+                //                 if (err) console.log(err);
+                //             });
+                //         }
+                //     }
+
+                // });
             });
+            
         }
         
         
