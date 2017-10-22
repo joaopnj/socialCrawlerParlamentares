@@ -30,7 +30,7 @@ module.exports = (app) => {
             }
         },
 
-        getParlamentar : (posicao) => {
+        getParlamentarByHashTag : (posicao) => {
             
             Congressista.find( (err, data) => {
 
@@ -39,7 +39,7 @@ module.exports = (app) => {
 
                 var hashTag = "#"+data[posicao].nome; //Adiciona # ao nome do congressista para ser usado na busca por tweets com o nome dele
 
-                console.log("HashTag: "+hashTag); //Mostrar se a # foi criada corretamente
+                console.log("Busca: "+hashTag); //Mostrar se a # foi criada corretamente
 
                 client.get('search/tweets', {"q" : hashTag }, (error, tweet, response) => { //Faz a busca pelo tweet utilizando o # com o nome do congressistas
                     if(tweet.statuses != null || tweet.statuses != undefined){ //Testa para ver se encontrou algum tweet
@@ -60,6 +60,46 @@ module.exports = (app) => {
                                 tweetObj.texto      = tweet.statuses[i].text; //cria um objeto texto de tweet
                                 tweetObj.internauta = tweet.statuses[i].user.name; //cria um objeto de nome do usuario que escreveu o tweet
                                 tweetObj.hashTag    = hashTag; //Cria uma hastag que sera usada nas pesquisas
+                                                        
+                                Dao.saveTweets(tweetObj); //Salva o tweet encontrado na base de dados
+                            }
+                        }
+                    }
+                });
+            });
+            
+        },
+
+        getParlamentarByName : (posicao) => {
+            
+            Congressista.find( (err, data) => {
+
+                console.log("Posição: "+posicao); //Linha utilizada pelo desenvolvedor para ver se esta pegando possicoes validas
+                console.log("Congressista "+posicao+ " : "+data[posicao]);//Linha utilizada pelo desenvolvedor para teste
+
+                var name = data[posicao].nome; //Adiciona # ao nome do congressista para ser usado na busca por tweets com o nome dele
+
+                console.log("Busca: "+name); //Mostrar se a # foi criada corretamente
+
+                client.get('search/tweets', {"q" : name }, (error, tweet, response) => { //Faz a busca pelo tweet utilizando o # com o nome do congressistas
+                    if(tweet.statuses != null || tweet.statuses != undefined){ //Testa para ver se encontrou algum tweet
+                        console.log("Texto do tweet: " +tweet.statuses[0]); //Mostra ao desenvolvedor o tweet encontrado
+                        console.log("Número de tweets: "+ tweet.statuses.length); //Mostra o numero de tweets o qual o nome do congressista apareceu
+
+                        if(tweet.statuses.length !== 0) { //Testa se o numero de tweets encontrado daquele congressista e diferente de 0
+
+                            for (var i = 0; i < tweet.statuses.length; i++) { //Percorre a lista de tweets vendo os estados dele
+
+                                if(error){ console.log(error); } //Caso ocorra o erro, exibe ao desenvolvedor o erro encontrado
+
+                                console.log("Texto do tweet: "  + tweet.statuses[i].text); //Exibe ao desenvolvedor o texto do tweet
+                                console.log("Usuário do tweet " + tweet.statuses[i].user.name); //Exibe o nome do usuario que escreveu o tweet
+                                console.log("Dados do usuário " + tweet.statuses[i].user); //Exibe os dados do escritor do tweet
+
+                                var tweetObj        = new Tweet(); // cria um objeto tweet
+                                tweetObj.texto      = tweet.statuses[i].text; //cria um objeto texto de tweet
+                                tweetObj.internauta = tweet.statuses[i].user.name; //cria um objeto de nome do usuario que escreveu o tweet
+                                tweetObj.hashTag    = name; //Cria uma hastag que sera usada nas pesquisas
                                                         
                                 Dao.saveTweets(tweetObj); //Salva o tweet encontrado na base de dados
                             }

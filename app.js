@@ -1,11 +1,12 @@
-const express        = require('express'); 
-const favicon        = require('serve-favicon');
-const load           = require('express-load');
-const logger         = require('morgan');
-const cookieParser   = require('cookie-parser');
-const bodyParser     = require('body-parser');
-const port           = 3000; //Seta a porta que o servidor ira conectar
-var   posicao        = 0; //Variavel usada na leitura da lista de congressistas, comecando na primeira posicao da lista
+const express         = require('express'); 
+const favicon         = require('serve-favicon');
+const load            = require('express-load');
+const logger          = require('morgan');
+const cookieParser    = require('cookie-parser');
+const bodyParser      = require('body-parser');
+const port            = 3000; //Seta a porta que o servidor ira conectar
+var   congressHashTag = 0; //Variavel usada na leitura da lista de congressistas, comecando na primeira posicao da lista
+var   congressName    = 0;
 
 var app = express();
 
@@ -26,10 +27,17 @@ app.use(express.static(__dirname + '/public'));
 mongodb.connect();//Estabelece a conexao com o banco de dados MongoDB
 service.saveParlamentar(); //Salva o congressitas 
 
-if(posicao <= 593){
+if(congressHashTag < 594){
     setInterval( () => { //Adiciona um intervalo entre cada busca, pois a API possui um limite de requisicoes que pdoem ser feitas nela
-        service.getParlamentar(posicao++); //Pula para a proxima posicao da lista de congressistas a serem pesquisados os tweets
+        service.getParlamentarByHashTag(congressHashTag++); //Pula para a proxima posicao da lista de congressistas a serem pesquisados os tweets
     },5000); //seta o intervalo de 5000 milisegundos (5 segundo)
+    if(congressHashTag = 593) { congressName = 1; }
+}
+
+if(congressName > 0 && congressName < 594){
+    setInterval( () => { //Adiciona um intervalo entre cada busca, pois a API possui um limite de requisicoes que pdoem ser feitas nela
+        service.getParlamentarByName(congressName++); //Pula para a proxima posicao da lista de congressistas a serem pesquisados os tweets
+    },5000);
 }
 
 app.listen(port, () => { //Faz a aplicacao escutar a porta e ver se ela esta disponivel
