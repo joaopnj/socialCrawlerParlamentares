@@ -37,13 +37,24 @@ module.exports = (app) => {
                 console.log("Posição: "+posicao); //Linha utilizada pelo desenvolvedor para ver se esta pegando possicoes validas
                 console.log("Congressista "+posicao+ " : "+data[posicao]);//Linha utilizada pelo desenvolvedor para teste
 
-                var hashTag = "#"+data[posicao].nome; //Adiciona # ao nome do congressista para ser usado na busca por tweets com o nome dele
-
+                var nome = data[posicao].nome;
+                var hashTag = "#" + nome; 
+                var arroba = "@" + nome;      
+                
                 console.log("Busca: "+hashTag); //Mostrar se a # foi criada corretamente
 
-                client.get('search/tweets', {"q" : hashTag }, (error, tweet, response) => { //Faz a busca pelo tweet utilizando o # com o nome do congressistas
+                //Faz a busca pelo tweet utilizando o # com o nome do congressistas
+                client.get('search/tweets', {"q" : hashTag }, (error, tweet, response) => { tratarRetornoApi(error, tweet, response); });
+
+                //Faz a busca pelo tweet utilizando o @ com o nome do congressistas
+                client.get('search/tweets', {"q" : arroba }, (error, tweet, response) => { tratarRetornoApi(error, tweet, response); });
+
+                //Faz a busca pelo tweet utilizando o nome do congressistas
+                client.get('search/tweets', {"q" : nome }, (error, tweet, response) => { tratarRetornoApi(error, tweet, response); });
+
+                function tratarRetornoApi(error, tweet, response){
                     if(tweet.statuses != null || tweet.statuses != undefined){ //Testa para ver se encontrou algum tweet
-                        console.log("Texto do tweet: " +tweet.statuses[0]); //Mostra ao desenvolvedor o tweet encontrado
+                        console.log("Texto do tweet: " + tweet.statuses[0]); //Mostra ao desenvolvedor o tweet encontrado
                         console.log("Número de tweets: "+ tweet.statuses.length); //Mostra o numero de tweets o qual o nome do congressista apareceu
 
                         if(tweet.statuses.length !== 0) { //Testa se o numero de tweets encontrado daquele congressista e diferente de 0
@@ -65,9 +76,8 @@ module.exports = (app) => {
                             }
                         }
                     }
-                });
-            });
-            
+			    }
+            });            
         },
 
         getParlamentarByName : (posicao) => {
