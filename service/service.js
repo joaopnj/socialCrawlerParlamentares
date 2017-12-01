@@ -4,7 +4,7 @@ module.exports = (app) => {
     var Congressista      = app.models.congressistas; //Variavel a qual se encontra 1 arquivo texto que possui o nome de todos os congressistas a serem pesquisados
     var Dao               = app.dao.dao;
     var Tweet             = app.models.tweet; //Variavel que sera usada para armazenar os tweets coletados
-    
+
     var client = new TwitterAPI({ //Cria uma variavel cliente para poder acessar a API do tweeter para fazer as operacoes
         //Parametros necessarios para iniciar o cliete que ira fazer os acessos
         consumer_key: 'knMiCR839pbl3VywuqLSIXMyg', //Primeiro paramentro, chave de identificacao do usuario
@@ -34,91 +34,113 @@ module.exports = (app) => {
             
             Congressista.find( (err, data) => {
 
-                console.log("Posição: "+posicao); //Linha utilizada pelo desenvolvedor para ver se esta pegando possicoes validas
-                console.log("Congressista "+posicao+ " : "+data[posicao]);//Linha utilizada pelo desenvolvedor para teste
-
-                var nome = data[posicao].nome;
-                var hashTag = "#" + nome; 
-                var arroba = "@" + nome;      
+                var busca = "#"+data[posicao].nome; //Adiciona # ao nome do congressista para ser usado na busca por tweets com o nome dele
+                var congressista = data[posicao].nome;
                 
-                console.log("Busca: "+hashTag); //Mostrar se a # foi criada corretamente
++                console.log("Busca: "+busca); //Mostrar se a # foi criada corretamente
 
-                //Faz a busca pelo tweet utilizando o # com o nome do congressistas
-                client.get('search/tweets', {"q" : hashTag }, (error, tweet, response) => { tratarRetornoApi(error, tweet, response); });
-
-                //Faz a busca pelo tweet utilizando o @ com o nome do congressistas
-                client.get('search/tweets', {"q" : arroba }, (error, tweet, response) => { tratarRetornoApi(error, tweet, response); });
-
-                //Faz a busca pelo tweet utilizando o nome do congressistas
-                client.get('search/tweets', {"q" : nome }, (error, tweet, response) => { tratarRetornoApi(error, tweet, response); });
-
-                function tratarRetornoApi(error, tweet, response){
+                client.get('search/tweets', {"q" : busca }, (error, tweet, response) => { //Faz a busca pelo tweet utilizando o # com o nome do congressistas
                     if(tweet.statuses != null || tweet.statuses != undefined){ //Testa para ver se encontrou algum tweet
-                        console.log("Texto do tweet: " + tweet.statuses[0]); //Mostra ao desenvolvedor o tweet encontrado
-                        console.log("Número de tweets: "+ tweet.statuses.length); //Mostra o numero de tweets o qual o nome do congressista apareceu
 
-                        if(tweet.statuses.length !== 0) { //Testa se o numero de tweets encontrado daquele congressista e diferente de 0
 
-                            for (var i = 0; i < tweet.statuses.length; i++) { //Percorre a lista de tweets vendo os estados dele
+                       if(tweet.statuses.length !== 0) { //Testa se o numero de tweets encontrado daquele congressista e diferente de 0
 
-                                if(error){ console.log(error); } //Caso ocorra o erro, exibe ao desenvolvedor o erro encontrado
+                           for (var i = 0; i < tweet.statuses.length; i++) { //Percorre a lista de tweets vendo os estados dele
 
-                                console.log("Texto do tweet: "  + tweet.statuses[i].text); //Exibe ao desenvolvedor o texto do tweet
-                                console.log("Usuário do tweet " + tweet.statuses[i].user.name); //Exibe o nome do usuario que escreveu o tweet
-                                console.log("Dados do usuário " + tweet.statuses[i].user); //Exibe os dados do escritor do tweet
+                               if(error){ console.log(error); } //Caso ocorra o erro, exibe ao desenvolvedor o erro encontrado
 
-                                var tweetObj        = new Tweet(); // cria um objeto tweet
-                                tweetObj.texto      = tweet.statuses[i].text; //cria um objeto texto de tweet
-                                tweetObj.internauta = tweet.statuses[i].user.name; //cria um objeto de nome do usuario que escreveu o tweet
-                                tweetObj.hashTag    = hashTag; //Cria uma hastag que sera usada nas pesquisas
-                                                        
-                                Dao.saveTweets(tweetObj); //Salva o tweet encontrado na base de dados
-                            }
-                        }
-                    }
-			    }
-            });            
+                               console.log("Texto do tweet: "  + tweet.statuses[i].text); //Exibe ao desenvolvedor o texto do tweet
+                               console.log("Usuário do tweet " + tweet.statuses[i].user.name); //Exibe o nome do usuario que escreveu o tweet
+                               console.log("Dados do usuário " + tweet.statuses[i].user); //Exibe os dados do escritor do tweet
+
+                               var tweetObj          = new Tweet(); // cria um objeto tweet
+                               tweetObj.texto        = tweet.statuses[i].text; //cria um objeto texto de tweet
+                               tweetObj.congressista = congressista;
+                               tweetObj.internauta   = tweet.statuses[i].user.name; //cria um objeto de nome do usuario que escreveu o tweet
+                               tweetObj.busca        = busca; //Cria uma hastag que sera usada nas pesquisas
+                                                       
+                               Dao.saveTweets(tweetObj); //Salva o tweet encontrado na base de dados
+                           }
+                       }
+                   }
+                });
+            });
         },
 
         getParlamentarByName : (posicao) => {
             
             Congressista.find( (err, data) => {
 
-                console.log("Posição: "+posicao); //Linha utilizada pelo desenvolvedor para ver se esta pegando possicoes validas
-                console.log("Congressista "+posicao+ " : "+data[posicao]);//Linha utilizada pelo desenvolvedor para teste
+                var busca = data[posicao].nome; //Adiciona # ao nome do congressista para ser usado na busca por tweets com o nome dele
+                var congressista = data[posicao].nome;
+                
++                console.log("Busca: "+busca); //Mostrar se a # foi criada corretamente
 
-                var name = data[posicao].nome; //Adiciona # ao nome do congressista para ser usado na busca por tweets com o nome dele
-
-                console.log("Busca: "+name); //Mostrar se a # foi criada corretamente
-
-                client.get('search/tweets', {"q" : name }, (error, tweet, response) => { //Faz a busca pelo tweet utilizando o # com o nome do congressistas
+                client.get('search/tweets', {"q" : busca }, (error, tweet, response) => { //Faz a busca pelo tweet utilizando o # com o nome do congressistas
                     if(tweet.statuses != null || tweet.statuses != undefined){ //Testa para ver se encontrou algum tweet
-                        console.log("Texto do tweet: " +tweet.statuses[0]); //Mostra ao desenvolvedor o tweet encontrado
-                        console.log("Número de tweets: "+ tweet.statuses.length); //Mostra o numero de tweets o qual o nome do congressista apareceu
 
-                        if(tweet.statuses.length !== 0) { //Testa se o numero de tweets encontrado daquele congressista e diferente de 0
 
-                            for (var i = 0; i < tweet.statuses.length; i++) { //Percorre a lista de tweets vendo os estados dele
+                       if(tweet.statuses.length !== 0) { //Testa se o numero de tweets encontrado daquele congressista e diferente de 0
 
-                                if(error){ console.log(error); } //Caso ocorra o erro, exibe ao desenvolvedor o erro encontrado
+                           for (var i = 0; i < tweet.statuses.length; i++) { //Percorre a lista de tweets vendo os estados dele
 
-                                console.log("Texto do tweet: "  + tweet.statuses[i].text); //Exibe ao desenvolvedor o texto do tweet
-                                console.log("Usuário do tweet " + tweet.statuses[i].user.name); //Exibe o nome do usuario que escreveu o tweet
-                                console.log("Dados do usuário " + tweet.statuses[i].user); //Exibe os dados do escritor do tweet
+                               if(error){ console.log(error); } //Caso ocorra o erro, exibe ao desenvolvedor o erro encontrado
 
-                                var tweetObj        = new Tweet(); // cria um objeto tweet
-                                tweetObj.texto      = tweet.statuses[i].text; //cria um objeto texto de tweet
-                                tweetObj.internauta = tweet.statuses[i].user.name; //cria um objeto de nome do usuario que escreveu o tweet
-                                tweetObj.hashTag    = name; //Cria uma hastag que sera usada nas pesquisas
-                                                        
-                                Dao.saveTweets(tweetObj); //Salva o tweet encontrado na base de dados
-                            }
-                        }
-                    }
+                               console.log("Texto do tweet: "  + tweet.statuses[i].text); //Exibe ao desenvolvedor o texto do tweet
+                               console.log("Usuário do tweet " + tweet.statuses[i].user.name); //Exibe o nome do usuario que escreveu o tweet
+                               console.log("Dados do usuário " + tweet.statuses[i].user); //Exibe os dados do escritor do tweet
+
+                               var tweetObj          = new Tweet(); // cria um objeto tweet
+                               tweetObj.texto        = tweet.statuses[i].text; //cria um objeto texto de tweet
+                               tweetObj.congressista = congressista;
+                               tweetObj.internauta   = tweet.statuses[i].user.name; //cria um objeto de nome do usuario que escreveu o tweet
+                               tweetObj.busca        = busca; //Cria uma busca que sera usada nas pesquisas
+                                                       
+                               Dao.saveTweets(tweetObj); //Salva o tweet encontrado na base de dados
+                           }
+                       }
+                   }
                 });
             });
+        },
+
+        getParlamentarByArroba : (posicao) => {
             
-        }
+            Congressista.find( (err, data) => {
+
+                var busca = data[posicao].nome; //Adiciona # ao nome do congressista para ser usado na busca por tweets com o nome dele
+                var congressista = data[posicao].nome;
+                
++                console.log("Busca: "+busca); //Mostrar se a # foi criada corretamente
+
+                client.get('search/tweets', {"q" : busca }, (error, tweet, response) => { //Faz a busca pelo tweet utilizando o # com o nome do congressistas
+                    if(tweet.statuses != null || tweet.statuses != undefined){ //Testa para ver se encontrou algum tweet
+
+
+                       if(tweet.statuses.length !== 0) { //Testa se o numero de tweets encontrado daquele congressista e diferente de 0
+
+                           for (var i = 0; i < tweet.statuses.length; i++) { //Percorre a lista de tweets vendo os estados dele
+
+                               if(error){ console.log(error); } //Caso ocorra o erro, exibe ao desenvolvedor o erro encontrado
+
+                               console.log("Texto do tweet: "  + tweet.statuses[i].text); //Exibe ao desenvolvedor o texto do tweet
+                               console.log("Usuário do tweet " + tweet.statuses[i].user.name); //Exibe o nome do usuario que escreveu o tweet
+                               console.log("Dados do usuário " + tweet.statuses[i].user); //Exibe os dados do escritor do tweet
+
+                               var tweetObj          = new Tweet(); // cria um objeto tweet
+                               tweetObj.texto        = tweet.statuses[i].text; //cria um objeto texto de tweet
+                               tweetObj.congressista = congressista;
+                               tweetObj.internauta   = tweet.statuses[i].user.name; //cria um objeto de nome do usuario que escreveu o tweet
+                               tweetObj.busca        = busca; //Cria uma busca que sera usada nas pesquisas
+                                                       
+                               Dao.saveTweets(tweetObj); //Salva o tweet encontrado na base de dados
+                           }
+                       }
+                   }
+                });
+            });
+        },
+
         
     }
 

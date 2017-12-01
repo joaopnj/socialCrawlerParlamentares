@@ -4,9 +4,10 @@ const load            = require('express-load');
 const logger          = require('morgan');
 const cookieParser    = require('cookie-parser');
 const bodyParser      = require('body-parser');
-const port            = 3000; //Seta a porta que o servidor ira conectar
-var   congressHashTag = 0; //Variavel usada na leitura da lista de congressistas, comecando na primeira posicao da lista
-var   congressName    = 0;
+const port            = 3001; //Seta a porta que o servidor ira conectar
+var   congressHashTag = 0;
+var   congressArroba;
+var   congressName;
 
 var app = express();
 
@@ -27,17 +28,31 @@ app.use(express.static(__dirname + '/public'));
 mongodb.connect();//Estabelece a conexao com o banco de dados MongoDB
 service.saveParlamentar(); //Salva o congressitas 
 
-if(congressHashTag < 594){
-    setInterval( () => { //Adiciona um intervalo entre cada busca, pois a API possui um limite de requisicoes que pdoem ser feitas nela
-        service.getParlamentarByHashTag(congressHashTag++); //Pula para a proxima posicao da lista de congressistas a serem pesquisados os tweets
-    },5000); //seta o intervalo de 5000 milisegundos (5 segundo)
-    if(congressHashTag = 593) { congressName = 1; }
+if(congressHashTag < 1920){
+    setInterval( () => { 
+       service.getParlamentarByHashTag(congressHashTag++); 
+    },5000);
+    if(congressHashTag == 1919){
+        congressArroba = 0;
+    }
 }
 
-if(congressName > 0 && congressName < 594){
-    setInterval( () => { //Adiciona um intervalo entre cada busca, pois a API possui um limite de requisicoes que pdoem ser feitas nela
-        service.getParlamentarByName(congressName++); //Pula para a proxima posicao da lista de congressistas a serem pesquisados os tweets
-    },5000);
+if(congressArroba < 1920){
+    setInterval( () => { 
+        service.getParlamentarByArroba(congressArroba++); 
+     },5000);
+     if(congressArroba == 1919){
+        congressName = 0;
+     }
+}
+
+if(congressName < 1920){
+    setInterval( () => { 
+        service.getParlamentarByName(congressName++); 
+     },5000);
+     if(congressName == 1919){
+        congressHashTag = 0;
+     }
 }
 
 app.listen(port, () => { //Faz a aplicacao escutar a porta e ver se ela esta disponivel

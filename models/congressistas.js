@@ -3,8 +3,9 @@ module.exports = () => {//Funcao que ira criar variaveis do tipo congressista pa
 	const Schema       = mongoose.Schema; //Adiciona o esquema da biblioteca mongoose para realizar as operacoes
 
 	var congressistas  = new Schema({ //Cria uma variavel congressistas que possuira alguns atributos
-		nome	: String,//Atributo nome da variavel congressista, usado para identificar quem e o congressista
-		cadastro: {type: Date, default: Date.now} //Variavel de cadastro usada para identificar a data de quando foi coletado esse congressista
+		nome	  : String,//Atributo nome da variavel congressista, usado para identificar quem e o congressista
+		sobrenome : String,
+		cadastro  : {type: Date, default: Date.now} //Variavel de cadastro usada para identificar a data de quando foi coletado esse congressista
 	});
 
 	return mongoose.model('congressistas', congressistas); //Cria um modelo no banco de dados do tipo congressista

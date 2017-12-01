@@ -7,12 +7,13 @@
         
     },
 "dependencies": {
-    "body-parser": "~1.13.2",
+    "body-parser"  : "~1.13.2",
     "cookie-parser": "~1.3.5",
-    "debug": "~2.2.0",
+    "debug"        : "~2.2.0",
     "express": "~4.13.1",
     "express-load": "*",
     "jade": "~1.11.0",
+    "level-naive-bayes" : "*",
     "mongoosastic": "*",
     "mongoose": "*",
     "morgan": "~1.6.1",

@@ -4,7 +4,8 @@ module.exports = (app) => {
     
     var MongoDbMiddleware = { //Cria uma variavel que ira possuir os dados da conexao com o bando de dados 
         connect : () => {//Funcao que ira realizar a conexao com o banco de dados
-            mongoose.connect('mongodb://admin:123@ds155644.mlab.com:55644/scparlamentares', (err) => { //Pega o endereco do servidor de dados e cria a conexao com ele
+            // mongoose.connect('mongodb://admin:123@ds155644.mlab.com:55644/scparlamentares', (err) => { //Pega o endereco do servidor de dados e cria a conexao com ele
+            mongoose.connect('mongodb://localhost/trabalhoBD', (err) => {   
                 if(err){ console.log('Erro ao conectar no mongodb '+err); } //Caso ocorra erro na conexao, exibe ao desenvolvedor o erro ocorrido
             });
         }
